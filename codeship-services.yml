@@ -1,12 +1,12 @@
 services:
   users-db:
-    build: https://github.com/MichaelE919/flask-microservices-users.git#master:project/db
+    build: ../flask-microservices-users/project/db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
   users-service:
-    build: https://github.com/MichaelE919/flask-microservices-users.git
+    build: ../flask-microservices-users
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
