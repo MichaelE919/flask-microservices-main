@@ -1,12 +1,16 @@
 services:
   users-db:
-    build: ../flask-microservices-users/project/db
+    build: 
+      context: ../flask-microservices-users/project/db
+      dockerfile: Dockerfile
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
   users-service:
-    build: ../flask-microservices-users
+    build: 
+      context: ../flask-microservices-users
+      dockerfile: Dockerfile
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
