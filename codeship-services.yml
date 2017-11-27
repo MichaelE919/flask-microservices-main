@@ -23,7 +23,7 @@ services:
 
   web-service:
     build:
-      context: https://github.com/MichaelE919/flask-microservices-client.git
+      context: ../flask-microservices-client
       dockerfile: Dockerfile
       args:
         - NODE_ENV=development
