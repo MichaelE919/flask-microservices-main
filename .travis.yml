@@ -29,11 +29,11 @@ before_install:
 
 before_script:
   # - export TEST_URL=http://192.168.99.100
-  - export REACT_APP_USERS_SERVICE_URL=http://192.168.99.100
+  - export REACT_APP_USERS_SERVICE_URL=http://34.201.125.38
   # - export DISPLAY=:99.0
   # - sh -e /etc/init.d/xvfb start
   # - sleep 3
-  - docker-compose up --build -d
+  - docker-compose -f docker-compose-staging.yml up -d --build
 
 script:
   - docker-compose -f docker-compose-staging.yml run users-service python manage.py test
