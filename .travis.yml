@@ -25,6 +25,8 @@ env:
     - USERS_REPO=https://github.com/MichaelE919/$USERS.git
     - USERS_DB=flask-microservices-users_db
     - USERS_DB_REPO=https://github.com/MichaelE919/$USERS.git#master:project/db
+    - CLIENT=flask-microservices-client
+    - CLIENT_REPO=https://github.com/MichaelE919/$CLIENT.git
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -60,3 +62,7 @@ after_success:
   - docker build $USERS_DB_REPO -t $USERS_DB:$COMMIT
   - docker tag $USERS_DB:$COMMIT $DOCKER_ID/$USERS_DB:$TAG
   - docker push $DOCKER_ID/$USERS_DB
+  # client
+  - docker build $CLIENT_REPO -t $CLIENT:$COMMIT
+  - docker tag $CLIENT:$COMMIT $DOCKER_ID/$CLIENT:$TAG
+  - docker push $DOCKER_ID/$CLIENT
