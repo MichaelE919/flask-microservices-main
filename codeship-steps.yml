@@ -1,0 +1,11 @@
+- name: set_variables
+  type: parallel
+  steps:
+      - service: web-service
+        command: export TEST_URL=http://192.168.99.100
+      - service: web-service
+        command: export REACT_APP_USERS_SERVICE_URL=http://192.168.99.100
+
+- name: run_e2e_tests        
+  service: web-service
+  command: testcafe chrome e2e/index.test.js

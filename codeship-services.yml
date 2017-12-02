@@ -1,0 +1,36 @@
+services:
+  users-db:
+    build: 
+      context: ../flask-microservices-users/project/db
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  users-service:
+    build: 
+      context: ../flask-microservices-users
+      dockerfile: Dockerfile
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - SECRET_KEY=my_precious
+    links:
+      - users-db
+
+  nginx:
+    build: ./nginx/
+    links:
+      - users-service
+      - web-service
+
+  web-service:
+    build:
+      context: ../flask-microservices-client
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    links:
+      - users-service
