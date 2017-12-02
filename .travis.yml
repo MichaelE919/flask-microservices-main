@@ -25,12 +25,6 @@ env:
     - USERS_REPO=https://github.com/MichaelE919/$USERS.git
     - USERS_DB=flask-microservices-users_db
     - USERS_DB_REPO=https://github.com/MichaelE919/$USERS.git#master:project/db
-    - CLIENT=flask-microservices-client
-    - CLIENT_REPO=https://github.com/MichaelE919/$CLIENT.git
-    - SWAGGER=flask-microservices-swagger
-    - SWAGGER_REPO=https://github.com/MichaelE919/$SWAGGER.git
-    - NGINX=flask.microservices-nginx
-    - NGINX_REPO=https://github.com/MichaelE919/flask-microservices-main.git#master:nginx
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -45,7 +39,7 @@ before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
-  - bash ./docker_build.sh
+  - docker-compose -f docker-compose-ci.yml up -d --build
 
 script:
   - docker-compose -f docker-compose-ci.yml run users-service python manage.py test
@@ -56,4 +50,13 @@ after_script:
   - docker-compose down
 
 after_success:
-  - bash ./docker_push.sh
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_ID -p $DOCKER_PASSWORD
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  # users
+  - docker build $USERS_REPO -t $USERS:$COMMIT
+  - docker tag $USERS:$COMMIT $DOCKER_ID/$USERS:$TAG
+  - docker push $DOCKER_ID/$USERS
+  # users db
+  - docker build $USERS_DB_REPO -t $USERS_DB:$COMMIT
+  - docker tag $USERS_DB:$COMMIT $DOCKER_ID/$USERS_DB:$TAG
+  - docker push $DOCKER_ID/$USERS_DB
