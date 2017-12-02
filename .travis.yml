@@ -31,7 +31,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - export TEST_URL=http://52.55.232.3
+  - export TEST_URL=http://127.0.0.1:8000
   - export REACT_APP_USERS_SERVICE_URL=http://52.55.232.3
   - export SECRET_KEY=my_precious
   - export DISPLAY=:99.0
