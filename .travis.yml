@@ -1,18 +1,18 @@
-# language: node_js
-# node_js: '7'
+language: node_js
+node_js: '7'
 
-# before_install:
-  # - stty cols 80
+before_install:
+  - stty cols 80
 
-# dist: trusty
+dist: trusty
 sudo: required
 
-# addons:
-  # apt:
-    # sources:
-      # - google-chrome
-    # packages:
-      # - google-chrome-stable
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 
 services:
   - docker
@@ -20,6 +20,9 @@ services:
 env:
   global:
     - DOCKER_COMPOSE_VERSION: 1.11.2
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - USERS=flask-microservices-users
+    - USERS_REPO=https://github.com/MichaelE919/$USERS.git
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -28,17 +31,26 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  # - export TEST_URL=http://127.0.0.1:8000
+  - export TEST_URL=http://127.0.0.1:8000
   - export REACT_APP_USERS_SERVICE_URL=http://52.55.232.3
-  # - export DISPLAY=:99.0
-  # - sh -e /etc/init.d/xvfb start
-  # - sleep 3
-  - docker-compose -f docker-compose-staging.yml up -d --build
+  - export SECRET_KEY=my_precious
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3
+  - docker-compose -f docker-compose-ci.yml up -d --build
 
 script:
-  - docker-compose -f docker-compose-staging.yml run users-service python manage.py test
-  - docker-compose -f docker-compose-staging.yml run users-service python manage.py recreate_db
-  # - testcafe chrome e2e/index.test.js
+  - docker-compose -f docker-compose-ci.yml run users-service python manage.py test
+  - docker-compose -f docker-compose-ci.yml run users-service python manage.py recreate_db
+  - testcafe chrome e2e/index.test.js
 
 after_script:
   - docker-compose down
+
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_ID -p $DOCKER_PASSWORD
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  # users
+  - docker build $USERS_REPO -t $USERS:$COMMIT
+  - docker tag $USERS:$COMMIT $DOCKER_ID/$USERS:$TAG
+  - docker push $DOCKER_ID/$USERS
