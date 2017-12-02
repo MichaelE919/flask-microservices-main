@@ -29,6 +29,8 @@ env:
     - CLIENT_REPO=https://github.com/MichaelE919/$CLIENT.git
     - SWAGGER=flask-microservices-swagger
     - SWAGGER_REPO=https://github.com/MichaelE919/$SWAGGER.git
+    - NGINX=flask-microservices-nginx
+    - NGINX_REPO=https://github.com/MichaelE919/flask-microservices-main.git#master:nginx
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -72,3 +74,7 @@ after_success:
   - docker build $SWAGGER_REPO -t $SWAGGER:$COMMIT
   - docker tag $SWAGGER:$COMMIT $DOCKER_ID/$SWAGGER:$TAG
   - docker push $DOCKER_ID/$SWAGGER
+  # nginx
+  - docker build $NGINX_REPO -t $NGINX:$COMMIT
+  - docker tag $NGINX:$COMMIT $DOCKER_ID/$NGINX:$TAG
+  - docker push $DOCKER_ID/$NGINX
