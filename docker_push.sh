@@ -28,24 +28,24 @@ then
      [ "$TRAVIS_BRANCH" == "production" ]
   then
     # users
-    docker build $USERS_REPO -t $USERS:$COMMIT
+    docker build -t $USERS:$COMMIT $USERS_REPO 
     docker tag $USERS:$COMMIT $DOCKER_ID/$USERS:$TAG
-    docker push $DOCKER_ID/$USERS
+    docker push $DOCKER_ID/$USERS:$TAG
     # users db
-    docker build $USERS_DB_REPO -t $USERS_DB:$COMMIT
+    docker build -t $USERS_DB:$COMMIT $USERS_DB_REPO 
     docker tag $USERS_DB:$COMMIT $DOCKER_ID/$USERS_DB:$TAG
-    docker push $DOCKER_ID/$USERS_DB
+    docker push $DOCKER_ID/$USERS_DB:$TAG
     # client
-    docker build $CLIENT_REPO -t $CLIENT:$COMMIT
+    docker build -t $CLIENT:$COMMIT $CLIENT_REPO
     docker tag $CLIENT:$COMMIT $DOCKER_ID/$CLIENT:$TAG
-    docker push $DOCKER_ID/$CLIENT
+    docker push $DOCKER_ID/$CLIENT:$TAG
     # swagger
-    docker build $SWAGGER_REPO -t $SWAGGER:$COMMIT
+    docker build -t $SWAGGER:$COMMIT $SWAGGER_REPO
     docker tag $SWAGGER:$COMMIT $DOCKER_ID/$SWAGGER:$TAG
-    docker push $DOCKER_ID/$SWAGGER
+    docker push $DOCKER_ID/$SWAGGER:$TAG
     # nginx
-    docker build $NGINX_REPO -t $NGINX:$COMMIT
+    docker build -t $NGINX:$COMMIT $NGINX_REPO 
     docker tag $NGINX:$COMMIT $DOCKER_ID/$NGINX:$TAG
-    docker push $DOCKER_ID/$NGINX
+    docker push $DOCKER_ID/$NGINX:$TAG
   fi
 fi
