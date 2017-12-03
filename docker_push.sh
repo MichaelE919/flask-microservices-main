@@ -17,7 +17,7 @@ then
     ./awscli-bundle/install -b ~/bin/aws
     export PATH=~/bin:$PATH
     # add AWS_ACCOUNT_ID, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY env vars
-    eval $(aws ecr get-login --no-include-email --region us-east-1)
+    eval $(aws ecr get-login --region us-east-1)
     export TAG=$TRAVIS_BRANCH
     export REPO=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
   fi
@@ -29,23 +29,23 @@ then
   then
     # users
     docker build $USERS_REPO -t $USERS:$COMMIT
-    docker tag $USERS:$COMMIT $DOCKER_ID/$USERS:$TAG
-    docker push $DOCKER_ID/$USERS
+    docker tag $USERS:$COMMIT $REPO/$USERS:$TAG
+    docker push $REPO/$USERS:$TAG
     # users db
     docker build $USERS_DB_REPO -t $USERS_DB:$COMMIT
-    docker tag $USERS_DB:$COMMIT $DOCKER_ID/$USERS_DB:$TAG
-    docker push $DOCKER_ID/$USERS_DB
+    docker tag $USERS_DB:$COMMIT $REPO/$USERS_DB:$TAG
+    docker push $REPO/$USERS_DB:$TAG
     # client
     docker build $CLIENT_REPO -t $CLIENT:$COMMIT
-    docker tag $CLIENT:$COMMIT $DOCKER_ID/$CLIENT:$TAG
-    docker push $DOCKER_ID/$CLIENT
+    docker tag $CLIENT:$COMMIT $REPO/$CLIENT:$TAG
+    docker push $REPO/$CLIENT:$TAG
     # swagger
     docker build $SWAGGER_REPO -t $SWAGGER:$COMMIT
-    docker tag $SWAGGER:$COMMIT $DOCKER_ID/$SWAGGER:$TAG
-    docker push $DOCKER_ID/$SWAGGER
+    docker tag $SWAGGER:$COMMIT $REPO/$SWAGGER:$TAG
+    docker push $REPO/$SWAGGER:$TAG
     # nginx
     docker build $NGINX_REPO -t $NGINX:$COMMIT
-    docker tag $NGINX:$COMMIT $DOCKER_ID/$NGINX:$TAG
-    docker push $DOCKER_ID/$NGINX
+    docker tag $NGINX:$COMMIT $REPO/$NGINX:$TAG
+    docker push $REPO/$NGINX:$TAG
   fi
 fi
