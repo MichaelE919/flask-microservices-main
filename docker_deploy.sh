@@ -31,8 +31,17 @@ then
 
     deploy_cluster() {
       family="testdriven-staging"
+      cluster="flask-microservices-staging"
+      service="flask-microservices-staging"
+
       make_task_def
       register_definition
+
+      if [[ $(aws ecs update-service --cluster $cluster --service $service --task-definition $revision | $JQ '.service.taskDefinition') != $revision ]]; then
+        echo "Error updating service."
+        return 1
+      fi
+
     }
 
     configure_aws_cli
