@@ -5,6 +5,7 @@ then
 
   if [ "$TRAVIS_BRANCH" == "staging" ]
   then
+
     JQ="jq --raw-output --exit-status"
 
     configure_aws_cli() {
